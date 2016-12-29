@@ -11,13 +11,19 @@
             "name": "Run core DSC resource tests only",
             "type": "PowerShell",
             "request": "launch",
-            "program": "${workspaceRoot}/.vscode/RunGlobalTests.ps1"
+            "program": "${workspaceRoot}/.vscode/RunDscCommonTests.ps1"
         },
         {
-            "name": "Run all tests",
+            "name": "Run all unit tests",
             "type": "PowerShell",
             "request": "launch",
-            "program": "${workspaceRoot}/.vscode/RunPesterTests.ps1"
+            "program": "${workspaceRoot}/.vscode/RunUnitTests.ps1"
+        },
+        {
+            "name": "Run integration tests",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/.vscode/RunIntegrationTests.ps1"
         }
     ]
 }
