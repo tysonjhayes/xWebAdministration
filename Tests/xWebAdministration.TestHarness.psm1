@@ -27,12 +27,12 @@ function Invoke-xWebAdministrationTest
     }
     
     Import-Module "$repoDir\xWebAdministration.psd1"
-
+    $testsToRun = @()
+    
     # Helper tests
 
     $unitTests = (Get-ChildItem (Join-Path $repoDir '\Tests\Helper\')).Name
     
-    $testsToRun = @()
     $unitTests | ForEach-Object {
         $testsToRun += @(@{
                 'Path' = "$repoDir\Tests\Helper\$_"
@@ -42,7 +42,6 @@ function Invoke-xWebAdministrationTest
     # Run Unit Tests
     $unitTests = (Get-ChildItem (Join-Path $repoDir '\Tests\Unit\')).Name
     
-    $testsToRun = @()
     $unitTests | ForEach-Object {
         $testsToRun += @(@{
                 'Path' = "$repoDir\Tests\Unit\$_"
@@ -52,7 +51,6 @@ function Invoke-xWebAdministrationTest
     # Integration Tests
     $integrationTests = (Get-ChildItem -Path (Join-Path $repoDir '\Tests\Integration\') -Filter '*.Tests.ps1').Name
     
-    $testsToRun = @()
     $integrationTests | ForEach-Object {
         $testsToRun += @(@{
                 'Path' = "$repoDir\Tests\Integration\$_"
