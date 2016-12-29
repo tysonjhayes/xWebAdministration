@@ -33,8 +33,9 @@ function Start-AppveyorTestScriptTask
                               -ChildPath "DscResource.Tests\TestHelper.psm1"
     Import-Module -Name $testHarnessPath
 
-    $result = Invoke-SPDscUnitTestSuite -TestResultsFile $testResultsFile `
-                                        -DscTestsPath $dscTestsPath
+    $result = Invoke-xWebAdministrationTest `
+                -TestResultsFile $testResultsFile `
+                -DscTestsPath $dscTestsPath
 
     $webClient = New-Object -TypeName "System.Net.WebClient" 
 
