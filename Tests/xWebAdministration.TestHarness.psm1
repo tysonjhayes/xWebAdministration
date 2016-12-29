@@ -50,7 +50,7 @@ function Invoke-xWebAdministrationTest
     }
     
     # Integration Tests
-    $integrationTests = (Get-ChildItem (Join-Path $repoDir '\Tests\Integration\')).Name
+    $integrationTests = (Get-ChildItem -Path (Join-Path $repoDir '\Tests\Integration\') -Filter '*.Tests.ps1').Name
     
     $testsToRun = @()
     $integrationTests | ForEach-Object {
@@ -140,13 +140,6 @@ function Invoke-xWebAdministrationIntegrationTest
 
     $repoDir = Join-Path $PSScriptRoot '..' -Resolve
 
-    $testCoverageFiles = @()
-    Get-ChildItem "$repoDir\DSCResources\**\*.psm1" -Recurse | ForEach-Object { 
-        if ($_.FullName -notlike '*\DSCResource.Tests\*') {
-            $testCoverageFiles += $_.FullName    
-        }
-    }
-
     $testResultSettings = @{ }
     if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false) {
         $testResultSettings.Add('OutputFormat', 'NUnitXml' )
@@ -155,7 +148,7 @@ function Invoke-xWebAdministrationIntegrationTest
     
     Import-Module "$repoDir\xWebAdministration.psd1"
     
-    $versionsToTest = (Get-ChildItem (Join-Path $repoDir '\Tests\Integration\')).Name
+    $versionsToTest = (Get-ChildItem -Path (Join-Path $repoDir '\Tests\Integration\') -Filter '*.Tests.ps1').Name
     
     $testsToRun = @()
     $versionsToTest | ForEach-Object {
@@ -170,7 +163,7 @@ function Invoke-xWebAdministrationIntegrationTest
         }
     }
 
-    $results = Invoke-Pester -Script $testsToRun -CodeCoverage $testCoverageFiles -PassThru @testResultSettings
+    $results = Invoke-Pester -Script $testsToRun -PassThru @testResultSettings
 
     return $results
 

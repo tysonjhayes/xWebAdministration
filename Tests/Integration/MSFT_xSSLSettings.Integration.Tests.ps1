@@ -33,7 +33,7 @@ try
     #region HelperFunctions
 
     # Function needed to test SslFlags
-    function Get-SslFlags
+    function Get-SslFlag
     {
         [CmdletBinding()]
         param
@@ -44,17 +44,17 @@ try
         )
         
         Get-WebConfiguration `
-                -PSPath IIS:\Sites `
-                -Location "$Website" `
-                -Filter 'system.webserver/security/access' | `
-                 ForEach-Object { $_.sslFlags }
+            -PSPath IIS:\Sites `
+            -Location "$Website" `
+            -Filter 'system.webserver/security/access' | `
+                ForEach-Object { $_.sslFlags }
     }
 
     #endregion
 
     # Create a new website for the SSLSettings
 
-    New-Website -Name $DSCConfig.AllNodes.Website `
+    $null = New-Website -Name $DSCConfig.AllNodes.Website `
         -Id 200 `
         -PhysicalPath $DSCConfig.AllNodes.PhysicalPath `
         -ApplicationPool $DSCConfig.AllNodes.AppPool `
@@ -85,10 +85,8 @@ try
             Invoke-Expression -Command "$($script:DSCResourceName)_Present -ConfigurationData `$DSCConfg  -OutputPath `$TestDrive"
            
             # Test SslFlags
-            Get-SslFlags -Website $DSCConfig.AllNodes.Website | Should Be $DSCConfig.AllNodes.Bindings
-            
-            }
-
+            Get-SslFlag -Website $DSCConfig.AllNodes.Website | Should Be $DSCConfig.AllNodes.Bindings
+        }
     }
 
     Describe "$($script:DSCResourceName)_Absent" {
@@ -110,12 +108,9 @@ try
             Invoke-Expression -Command "$($script:DSCResourceName)_Absent -ConfigurationData `$DSCConfg  -OutputPath `$TestDrive"
 
             # Test SslFlags
-            Get-SslFlags -Website $DSCConfig.AllNodes.Website | Should BeNullOrEmpty
-            
-            }
-
+            Get-SslFlag -Website $DSCConfig.AllNodes.Website | Should BeNullOrEmpty
+        }
     }
-
 }
 finally
 {
