@@ -4,7 +4,7 @@
 version: 1.16.{build}.0
 install:
     - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-    - npm install -g gulp    
+    - npm install -g gulp
     - npm install
     
     - ps: |

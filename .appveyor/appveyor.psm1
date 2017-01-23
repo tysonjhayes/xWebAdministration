@@ -2,6 +2,8 @@ function Start-AppveyorInstallTask
 {
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name Pester -Force
+    Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools -Name 'Web-Server'
+
     Start-Process -Wait -FilePath "git" -ArgumentList @(
         "clone",
         "-q",
@@ -16,12 +18,8 @@ function Start-AppveyorInstallTask
         (Join-Path -Path $env:APPVEYOR_BUILD_FOLDER -ChildPath "DscResources")
     )
     $testHelperPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
-                                -ChildPath "DscResource.Tests\TestHelper.psm1"
+                        -ChildPath "DscResource.Tests\TestHelper.psm1"
     Import-Module -Name $testHelperPath -Force
-
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module -Name Pester -Repository PSGallery -Force
-    Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools -Name 'Web-Server'
 }
 
 function Start-AppveyorTestScriptTask
@@ -30,7 +28,7 @@ function Start-AppveyorTestScriptTask
     $testHarnessPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                                  -ChildPath "\Tests\xWebAdministration.TestHarness.psm1"
     $dscTestsPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
-                              -ChildPath "DscResource.Tests\TestHelper.psm1"
+                              -ChildPath "DscResource.Tests\Meta.Tests.ps1"
     Import-Module -Name $testHarnessPath
 
     $result = Invoke-xWebAdministrationTest `

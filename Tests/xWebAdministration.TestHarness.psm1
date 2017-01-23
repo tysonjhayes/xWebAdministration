@@ -9,7 +9,7 @@ function Invoke-xWebAdministrationTest
         [System.String] $DscTestsPath
     )
 
-    Write-Verbose 'Commencing xWebAdministration unit tests'
+    Write-Verbose 'Commencing all xWebAdministration tests'
 
     $repoDir = Join-Path $PSScriptRoot '..' -Resolve
 
@@ -31,11 +31,11 @@ function Invoke-xWebAdministrationTest
     
     # Helper tests
 
-    $unitTests = (Get-ChildItem (Join-Path $repoDir '\Tests\Helper\')).Name
+    $helperTests = (Get-ChildItem (Join-Path $repoDir '\Tests\Helper\')).Name
     
-    $unitTests | ForEach-Object {
+    $helperTests | ForEach-Object {
         $testsToRun += @(@{
-                'Path' = "$repoDir\Tests\Helper\$_"
+            'Path' = "$repoDir\Tests\Helper\$_"
         })
     }
 
@@ -44,7 +44,7 @@ function Invoke-xWebAdministrationTest
     
     $unitTests | ForEach-Object {
         $testsToRun += @(@{
-                'Path' = "$repoDir\Tests\Unit\$_"
+            'Path' = "$repoDir\Tests\Unit\$_"
         })
     }
     
@@ -53,7 +53,7 @@ function Invoke-xWebAdministrationTest
     
     $integrationTests | ForEach-Object {
         $testsToRun += @(@{
-                'Path' = "$repoDir\Tests\Integration\$_"
+            'Path' = "$repoDir\Tests\Integration\$_"
         })
     }
 
@@ -107,7 +107,7 @@ function Invoke-xWebAdministrationUnitTest
     $testsToRun = @()
     $versionsToTest | ForEach-Object {
         $testsToRun += @(@{
-                'Path' = "$repoDir\Tests\Unit\$_"
+            'Path' = "$repoDir\Tests\Unit\$_"
         })
     }
     
