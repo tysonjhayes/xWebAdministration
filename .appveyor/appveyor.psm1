@@ -1,7 +1,7 @@
 function Start-AppveyorInstallTask
 {
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module -Name Pester -Force
+    Install-Module -Name Pester -MaximumVersion 3.4.3 -Force
     Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools -Name 'Web-Server'
 
     Start-Process -Wait -FilePath "git" -ArgumentList @(
@@ -35,14 +35,14 @@ function Start-AppveyorTestScriptTask
                 -TestResultsFile $testResultsFile `
                 -DscTestsPath $dscTestsPath
 
-    $webClient = New-Object -TypeName "System.Net.WebClient" 
+    $webClient = New-Object -TypeName "System.Net.WebClient"
 
     $testResultsFilePath = Resolve-Path -Path $testResultsFile
-    $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", 
-                          $testResultsFilePath)
-    
-    if ($result.FailedCount -gt 0) 
-    { 
+    $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)",
+        $testResultsFilePath)
+
+    if ($result.FailedCount -gt 0)
+    {
         throw "$($result.FailedCount) tests failed."
     }
 }
@@ -53,7 +53,7 @@ function Start-AppveyorAfterTestTask
     $dscTestsPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                               -ChildPath "Modules\SharePointDsc\DscResource.Tests"
     Move-Item -Path $dscTestsPath -Destination $env:APPVEYOR_BUILD_FOLDER
-    
+
     # Import the module again from its new location
     $testHelperPath = Join-Path -Path $env:APPVEYOR_BUILD_FOLDER `
                                 -ChildPath "DscResource.Tests\TestHelper.psm1"
@@ -79,10 +79,10 @@ function Start-AppveyorAfterTestTask
     Write-DscResourceWikiSite -OutputPath $wikiContentPath -ModulePath $mainModulePath -Verbose
 
     $zipFileName = "SharePointDsc_$($env:APPVEYOR_BUILD_VERSION)_wikicontent.zip"
-    [System.IO.Compression.ZipFile]::CreateFromDirectory($wikiContentPath, 
-                                                         "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
-    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process { 
-        Push-AppveyorArtifact $_.FullName -FileName $_.Name 
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($wikiContentPath,
+        "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
+    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process {
+        Push-AppveyorArtifact $_.FullName -FileName $_.Name
     }
 
     # Remove the readme files that are used to generate documentation so they aren't shipped
@@ -95,13 +95,13 @@ function Start-AppveyorAfterTestTask
     $zipFileName = "SharePointDsc_$($env:APPVEYOR_BUILD_VERSION).zip"
     [System.IO.Compression.ZipFile]::CreateFromDirectory($mainModulePath, "$env:APPVEYOR_BUILD_FOLDER\$zipFileName")
     New-DscChecksum -Path $env:APPVEYOR_BUILD_FOLDER -Outpath $env:APPVEYOR_BUILD_FOLDER
-    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process { 
-        Push-AppveyorArtifact $_.FullName -FileName $_.Name 
+    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName" | ForEach-Object -Process {
+        Push-AppveyorArtifact $_.FullName -FileName $_.Name
     }
-    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName.checksum" | ForEach-Object -Process { 
-        Push-AppveyorArtifact $_.FullName -FileName $_.Name 
+    Get-ChildItem -Path "$env:APPVEYOR_BUILD_FOLDER\$zipFileName.checksum" | ForEach-Object -Process {
+        Push-AppveyorArtifact $_.FullName -FileName $_.Name
     }
-    
+
     Set-Location -Path $mainModulePath
     $nuspecParams = @{
         packageName = "SharePointDsc"
@@ -122,8 +122,8 @@ function Start-AppveyorAfterTestTask
         "-outputdirectory $env:APPVEYOR_BUILD_FOLDER"
     )
     $nuGetPackageName = "SharePointDsc." + $env:APPVEYOR_BUILD_VERSION + ".nupkg"
-    Get-ChildItem "$env:APPVEYOR_BUILD_FOLDER\$nuGetPackageName" | ForEach-Object -Process { 
-        Push-AppveyorArtifact $_.FullName -FileName $_.Name 
+    Get-ChildItem "$env:APPVEYOR_BUILD_FOLDER\$nuGetPackageName" | ForEach-Object -Process {
+        Push-AppveyorArtifact $_.FullName -FileName $_.Name
     }
 }
 
