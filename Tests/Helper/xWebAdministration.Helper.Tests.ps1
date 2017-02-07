@@ -15,11 +15,11 @@ Describe 'xWebAdministration whole of module tests' {
 
         It "Should compile MOFs for all examples correctly" {
 
-            ## For Appveyor builds copy the module to the system modules directory so it falls 
-            ## in to a PSModulePath folder and is picked up correctly. 
-            if ($env:APPVEYOR -eq $true) 
+            ## For Appveyor builds copy the module to the system modules directory so it falls
+            ## in to a PSModulePath folder and is picked up correctly.
+            if ($env:APPVEYOR -eq $true)
             {
-                Copy-item -Path "$env:APPVEYOR_BUILD_FOLDER\xWebAdministration" `
+                Copy-item -Path "$env:APPVEYOR_BUILD_FOLDER" `
                           -Destination 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\xWebAdministration' `
                           -Recurse
             }
@@ -43,13 +43,13 @@ Describe 'xWebAdministration whole of module tests' {
                     }
                 )
             }
-            
+
             Get-ChildItem -Path "$RepoRoot\Examples" -Filter "*.ps1" -Recurse | ForEach-Object -Process {
                     $path = $_.FullName
                     try
                     {
                         . $path
- 
+
                         $command = Get-Command Example
                         $params = @{}
                         $command.Parameters.Keys | Where-Object { $_ -like "*Account" -or $_ -eq "Passphrase" } | ForEach-Object -Process {
@@ -63,10 +63,10 @@ Describe 'xWebAdministration whole of module tests' {
                         Write-Warning -Message "Unable to compile MOF for example '$path'"
                         Write-Warning $_.Exception.Message
                     }
-                } 
+                }
             $examplesWithErrors | Should Be 0
 
-            if ($env:APPVEYOR -eq $true) 
+            if ($env:APPVEYOR -eq $true)
             {
                 Remove-item -Path 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\xWebAdministration' `
                             -Recurse -Force -Confirm:$false
@@ -88,7 +88,7 @@ Describe 'xWebAdministration whole of module tests' {
                                         "test markdown files. Please be sure that you have " + `
                                         "installed nodejs.")
             }
-            
+
             if ($runGulp -eq $true)
             {
                 $mdErrors = 0
@@ -97,7 +97,7 @@ Describe 'xWebAdministration whole of module tests' {
                     Start-Process -FilePath "gulp" -ArgumentList "test-mdsyntax --silent" -Wait -WorkingDirectory $RepoRoot -PassThru -NoNewWindow
                     Start-Sleep -Seconds 3
                     $mdIssuesPath = Join-Path -Path $RepoRoot -ChildPath "markdownissues.txt"
-                    
+
                     if ((Test-Path -Path $mdIssuesPath) -eq $true)
                     {
                         Get-Content -Path $mdIssuesPath | ForEach-Object -Process {
